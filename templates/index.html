@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notícias de Interesse para Segurança Pública</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        a {
+            display: block;
+            /* ou inline-block, dependendo do layout */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90%;
+            /* Ajuste conforme necessário */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #003366;
+        }
+
+        .header-info {
+            display: none;
+            /* Ocultando o cabeçalho visualmente */
+        }
+
+        .news-block {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .news-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        button {
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #004085;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .centered-container {
+            display: flex;
+            justify-content: center;
+            /* Alinha horizontalmente ao centro */
+            margin-top: 20px;
+            /* Espaçamento opcional no topo */
+        }
+
+        .content-container h1 {
+            text-align: center;
+            /* Centraliza o texto do elemento <h1> */
+        }
+
+        /* Aplica margem à direita do primeiro botão */
+        .btn-primary {
+            margin-right: 10px;
+            /* Ajuste o valor conforme necessário */
+        }
+
+        /* Alternativamente, você pode querer adicionar margem aos dois lados de cada botão para garantir espaço suficiente de todos os lados */
+        .btn {
+            margin: 0 10px;
+            /* Adiciona 10px de margem à esquerda e à direita de cada botão */
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center; /* Centraliza os botões horizontalmente se desejado */
+            align-items: center; /* Alinha os botões verticalmente */
+        }
+
+        .btn:active {
+            transform: scale(0.98); /* Faz o botão parecer pressionado ao clicar */
+        }
+        
+        
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment-with-locales.min.js"></script>
+</head>
+
+<body>
+
+    <div class="loading-overlay" id="loading">Carregando...</div>
+    <div class="modal" id="errorModal">
+        <p>Houve um erro ao buscar as notícias.</p>
+        <button onclick="closeModal()">Fechar</button>
+    </div>
+
+
+
+    <div class="container">
+        <div class="content-container">
+            <h1 class="my-4">Notícias de Interesse para Segurança Pública</h1>
+            <!-- Outros conteúdos podem ser adicionados aqui -->
+        </div>
+
+        <div class="header-info">
+            <p>SSP/SP</p>
+            <p>PMESP</p>
+            <p>Gab CmtG</p>
+            <p>Escritório de Representação Institucional em Brasília/DF (ERPMESP)</p>
+            <p>Data: <span id="currentDate"></span></p>
+        </div>
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="copyText()">Copiar</button>
+            <button class="btn btn-success" onclick="shareContent()">Compartilhar</button>
+        </div>
+
+        <div id="news">
+            <!-- Notícias serão inseridas aqui via JavaScript -->
+        </div>
+    </div>
+    <script>
+        moment.locale('pt-br');
+        document.getElementById('currentDate').textContent = moment().format('DDMMMYY').toUpperCase().replace('JAN', 'JAN').replace('FEV', 'FEV').replace('MAR', 'MAR').replace('APR', 'ABR').replace('MAY', 'MAI').replace('JUN', 'JUN').replace('JUL', 'JUL').replace('AUG', 'AGO').replace('SEP', 'SET').replace('OCT', 'OUT').replace('NOV', 'NOV').replace('DEC', 'DEZ');
+
+        document.getElementById('loading').style.display = 'flex'; // Mostra a tela de carregamento
+
+        axios.get('http://127.0.0.1:5000/noticias')
+            .then(response => {
+                const news = response.data;
+                const newsElement = document.getElementById('news');
+                let htmlContent = '<div class="news-block"><h3>Notícias da Câmara dos Deputados:</h3>';
+                news.camara.forEach(item => {
+                    htmlContent += `<p>${item.titulo}: <a href="${item.link}" target="_blank">${item.link}</a></p>`;
+                });
+                htmlContent += '</div>';
+                htmlContent += '<div class="news-block"><h3>Notícias do Senado:</h3>';
+                news.senado.forEach(item => {
+                    htmlContent += `<p>${item.titulo}: <a href="${item.link}" target="_blank">${item.link}</a></p>`;
+                });
+                htmlContent += '</div>';
+                newsElement.innerHTML = htmlContent;
+
+                <!-- Adicione na seção onde os dados são processados no seu script JS -->
+                htmlContent += '<div class="news-block"><h3>Notícias Gerais de Segurança Pública (Últimas 24 horas):</h3>';
+                news.google_news.forEach(item => {
+                    htmlContent += `<b>(${item.data}): ${item.midia} </b> <p>${item.titulo} <a href="${item.link}" target="_blank">${item.link}</a></p>`;
+                });
+                htmlContent += '</div>';
+                newsElement.innerHTML = htmlContent;
+
+                document.getElementById('loading').style.display = 'none'; // Esconde a tela de carregamento
+            })
+            .catch(error => {
+                console.error('Erro ao carregar as notícias', error);
+                document.getElementById('loading').style.display = 'none'; // Esconde a tela de carregamento
+                document.getElementById('errorModal').classList.add('show'); // Mostra o modal de erro
+            });
+
+        function closeModal() {
+            document.getElementById('errorModal').classList.remove('show'); // Esconde o modal de erro
+        }
+
+        //document.addEventListener('DOMContentLoaded', fetchNews); // Executa fetchNews quando a página carregar
+
+
+        function copyText() {
+            const headerInfoText = "SSP/SP\nPMESP\nGab CmtG\nEscritório de Representação Institucional em Brasília/DF (ERPMESP)\nData: " + document.getElementById('currentDate').textContent + "\n";
+            const newsText = document.getElementById('news').innerText;
+            navigator.clipboard.writeText(headerInfoText + '\n' + newsText)
+                .then(() => alert('Texto copiado com sucesso!'))
+                .catch(err => console.error('Erro ao copiar texto:', err));
+        }
+
+
+        function shareContent() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Notícias de Interesse para Segurança Pública',
+                    text: document.getElementById('news').innerText,
+                    url: document.location.href
+                }).then(() => {
+                    console.log('Conteúdo compartilhado com sucesso!');
+                }).catch(error => {
+                    console.error('Erro ao compartilhar', error);
+                });
+            } else {
+                alert("Seu navegador não suporta a API de compartilhamento.");
+            }
+        }
+
+    </script>
+</body>
+
+</html>
