@@ -180,7 +180,7 @@
 
         document.getElementById('loading').style.display = 'flex'; // Mostra a tela de carregamento
 
-        axios.get('http://127.0.0.1:5000/noticias')
+        axios.get(getApiEndpoint())
             .then(response => {
                 const news = response.data;
                 const newsElement = document.getElementById('news');
@@ -243,6 +243,17 @@
                 alert("Seu navegador não suporta a API de compartilhamento.");
             }
         }
+
+        function getApiEndpoint() {
+            const hostname = window.location.hostname;
+            if (hostname === "localhost" || hostname === "127.0.0.1") {
+                return "http://localhost:5000/noticias"; // Endpoint para desenvolvimento local
+            } else {
+                return "https://erpmesp.site/noticias"; // Endpoint para produção
+            }
+        }
+
+        
 
     </script>
 </body>
