@@ -246,7 +246,7 @@
                 newsElement2 = document.getElementById('policiais');
 
                 <!-- Adicione na seção onde os dados são processados no seu script JS -->
-                let htmlContent2 = '<div class="news-block"><h3>Notícias de ocorrências Policiais Militares no Brasil (Últimas 24 horas):</h3>';
+                let htmlContent2 = '<div class="news-block"><h3>Notícias de ocorrências Policiais Militares no Brasil (Últimas 24 horas):</h3> <br/>';
                 news.google_news.forEach(item => {
                     htmlContent2 += `<b>(${item.data}): ${item.midia} </b> <p>${item.titulo} <a href="${item.link}" target="_blank">${item.link}</a></p>`;
                 });
