@@ -281,7 +281,7 @@
             if (navigator.share) {
                 navigator.share({
                     title: "SSP/SP\nPMESP\nGab CmtG\nEscritório de Representação Institucional em Brasília/DF (ERPMESP)\nData: " + document.getElementById('currentDate').textContent + "\n",
-                    text: "SSP/SP\nPMESP\nGab CmtG\nEscritório de Representação Institucional em Brasília/DF (ERPMESP)\nData: " + document.getElementById('currentDate').textContent + "\n" + document.getElementById('legislativas').innerText,
+                    text: "SSP/SP\nPMESP\nGab CmtG\nEscritório de Representação Institucional em Brasília/DF (ERPMESP)\nData: " + document.getElementById('currentDate').textContent + "\n\n" + document.getElementById('legislativas').innerText,
                     url: document.location.href
                 }).then(() => {
                     console.log('Conteúdo compartilhado com sucesso!');
@@ -307,7 +307,7 @@
             if (navigator.share) {
                 navigator.share({
                     title: "Notícias policiais militares no Brasil\nData: " + document.getElementById('currentDate').textContent + "\n",
-                    text: "Notícias policiais militares no Brasil\nData: " + document.getElementById('currentDate').textContent + "\n" + document.getElementById('policiais').innerText,
+                    text: "Notícias policiais militares no Brasil\nData: " + document.getElementById('currentDate').textContent + "\n\n" + document.getElementById('policiais').innerText,
                     url: document.location.href
                 }).then(() => {
                     console.log('Conteúdo compartilhado com sucesso!');
