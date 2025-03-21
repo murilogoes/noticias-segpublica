@@ -25,9 +25,16 @@ def get_noticias():
     
     # Notícias da Câmara
     url_camara = 'https://www.camara.leg.br/noticias/rss/dinamico/SEGURANCA'
-    response = requests.get(url_camara)
+    headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0 Safari/537.36'
+    }
+
+    #response = requests.get(url_camara)
+    response = requests.get(url_camara, headers=headers)
+
     if response.status_code == 200:
         root = ET.fromstring(response.content)
+        
         for item in root.findall('./channel/item'):
             title = item.find('title').text
             link = item.find('link').text
